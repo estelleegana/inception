@@ -1,0 +1,91 @@
+# ==== liaisons intercontainers ====
+networks:
+    inception:
+        name: inception
+
+# =========== containers ===========
+# build context     : chemin
+# build dockerfile  : fichier qui creer les containers
+# networks          : reseau auquel co le container
+# volumes           : donne acces au repertoire au container associe
+# restart           : redemarrer le container
+services:
+    mariadb:
+        image: mariadb
+        container_name: mariadb
+        build:
+            context: ./requirements/mariadb
+            dockerfile: Dockerfile
+        networks:
+            - inception
+        expose:
+            - "3306"
+        volumes:
+            - mariadb:/var/lib/mysql
+        env_file: .env
+        restart: unless-stopped
+        healthcheck:
+            test: mysqladmin ping --host=localhost -p${SQL_ROOT_PASSWORD}
+            interval: 5s
+            timeout: 1s
+
+    wordpress:
+        image: wordpress
+        container_name: wordpress
+        build:
+            context: ./requirements/wordpress
+            dockerfile: Dockerfile
+        networks:
+            - inception
+        depends_on:
+            mariadb:
+                condition: service_healthy
+
+        expose:
+            - "9000"
+        volumes:
+            - wordpress:/var/www/html/wordpress
+        env_file: .env
+        restart: unless-stopped
+    
+    nginx:
+        image: nginx
+        container_name: nginx
+        build:
+            context: ./requirements/nginx
+            dockerfile: Dockerfile
+        networks:
+            - inception
+        depends_on:
+            - wordpress
+        ports:
+            - "443:443"
+        volumes:
+            - wordpress:/var/www/html/wordpress
+        env_file: .env
+        restart: unless-stopped
+
+
+
+# =========== volumes ===========
+# driver    : volume local ou a distance
+# o         : operation
+# device    :chemin
+volumes:
+    mariadb:
+        driver: local
+        driver_opts:
+            type: 'none'
+            o: 'bind'
+            device: '/home/estegana/data/mariadb'
+    wordpress:
+        driver: local
+        driver_opts:
+            type: 'none'
+            o: 'bind'
+            device: '/home/estegana/data/wordpress'
+
+
+
+
+    

@@ -1,0 +1,21 @@
+DOMAIN_NAME=
+SITE_TITLE=
+
+# -------------- mariadb
+#mdp su root sql
+SQL_ROOT_PASSWORD=
+SQL_DATABASE=
+SQL_USER=
+SQL_HOST=
+#mdp user sql
+SQL_PASSWORD=
+
+# -------------- wp admin
+ADMIN_USER=
+ADMIN_PASSWORD=
+ADMIN_EMAIL=
+
+# -------------- wp user
+USER1_LOGIN=
+USER1_PASSWORD=
+USER1_MAIL=

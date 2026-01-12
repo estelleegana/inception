@@ -1,0 +1,8 @@
+[mysqld]
+user        = mysql
+port        = 3306
+bind-address    = 0.0.0.0
+datadir     = /var/lib/mysql
+pid-file    = /var/run/mysqld/mysqld.pid
+socket      = /var/run/mysqld/mysqld.sock
+max_allowed_packet = 64M
